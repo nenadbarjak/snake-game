@@ -3,6 +3,31 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+
+
+const onKeyDown = (e) => {
+    switch (e.keyCode) {
+      case 37:
+      case 65:
+        direction = 'left'
+        break
+      case 38:
+      case 87:
+        direction = 'up'
+        break
+      case 39:
+      case 68:
+        direction = 'right'
+        break
+      case 40:
+      case 83:
+        direction = 'down'
+        break
+    }
+}
+
+document.addEventListener('keydown', onKeyDown)
+
 const getRandomPosition = () => {
     const min = 0
     let maxX = canvas.width - 20
@@ -31,7 +56,7 @@ const apple = getRandomPosition()
 const dx = 3
 const dy = 3
 
-const direction = 'right'
+let direction = 'right'
 
 const moveSnake = () => {
     let head = snake[snake.length - 1]
