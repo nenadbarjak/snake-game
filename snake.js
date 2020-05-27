@@ -35,7 +35,7 @@ const getRandomPosition = () => {
     let x = Math.floor((Math.random() * (maxX - min + 1) + min) / 20) * 20
     let y = Math.floor((Math.random() * (maxY - min + 1) + min) / 20) * 20
 
-    return [x, y]
+    return {x, y}
 }
 
 let snake = [
@@ -52,9 +52,6 @@ let snake = [
 ]
 
 const apple = getRandomPosition()
-
-const dx = 3
-const dy = 3
 
 let direction = 'right'
 
@@ -111,7 +108,7 @@ let speed = 0
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
-    draw(ctx, { x: apple[0], y: apple[1]}, 20, 20)
+    draw(ctx, { x: apple.x, y: apple.y}, 20, 20)
 
     snake.forEach(square => {           
         draw(ctx, { x: square.x, y: square.y }, 20, 20, '#000')
