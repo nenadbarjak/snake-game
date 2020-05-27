@@ -3,11 +3,74 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
-const snake = [
-    [0, 160],
-    [20, 160],
-    [40, 160]
+const getRandomPosition = () => {
+    const min = 0
+    let maxX = canvas.width - 20
+    let maxY = canvas.height - 20
+    let x = Math.floor((Math.random() * (maxX - min + 1) + min) / 20) * 20
+    let y = Math.floor((Math.random() * (maxY - min + 1) + min) / 20) * 20
+
+    return [x, y]
+}
+
+let snake = [
+    {
+        x: 0,
+        y: 160
+    }, {
+        x: 20,
+        y: 160
+    }, {
+        x: 40,
+        y: 160
+    }
 ]
+
+const apple = getRandomPosition()
+
+const dx = 3
+const dy = 3
+
+const direction = 'right'
+
+const moveSnake = () => {
+    let head = snake[snake.length - 1]
+    switch (direction) {
+        case ('right'):
+            if (head.x === canvas.width -20) {
+                head = { x: 0, y: head.y}
+            } else {
+                head = { x: head.x + 20, y: head.y}
+            }
+            break
+
+        case ('left'):
+            if (head.x === 0) {
+                head = { x: canvas.width -20, y: head.y}
+            } else {
+                head = { x: head.x - 20, y: head.y}
+            }
+            break
+
+        case ('down'):
+            if (head.y === canvas.height - 20) {
+                head = { x: head.x, y: 0}
+            } else {
+                head = { x: head.x , y: head.y + 20}
+            }
+            break
+
+        case ('up'):
+            if (head.y === 0) {
+                head = { x: head.x, y: canvas.height - 20}
+            } else {
+                head = { x: head.x , y: head.y - 20}
+            }
+            break
+    }
+    snake.push(head)
+    snake.shift()
+}
 
 const draw = (ctx, location, w, h, color) => {
     ctx.fillStyle = color || 'red'
@@ -17,14 +80,22 @@ const draw = (ctx, location, w, h, color) => {
     ctx.strokeRect(location.x, location.y, w, h)
 }
 
+let counter = 1
+let speed = 0
+
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
+    draw(ctx, { x: apple[0], y: apple[1]}, 20, 20)
+
     snake.forEach(square => {           
-        draw(ctx, { x: square[0], y: square[1] }, 20, 20, '#000')
+        draw(ctx, { x: square.x, y: square.y }, 20, 20, '#000')
     })
 
-    snake.forEach(square => square[0] = square[0] + 3)
+    if (counter === 1 || counter % (10 - speed) === 0) {
+        moveSnake()
+    }
+    counter++
 
     requestAnimationFrame(update)
 }
