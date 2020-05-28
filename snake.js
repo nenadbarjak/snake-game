@@ -101,6 +101,22 @@ const moveSquare = (square) => {
     }    
 }
 
+const gameOver = () => {
+    alert('Game Over!')
+    
+}
+
+const didSnakeBiteItSelf = () => {
+    let squares = [...snake]
+    const head = squares.pop()
+
+    squares.forEach(square => {
+      if (square.x === head.x && square.y === head.y) {
+        alert('game over!!!')
+      }
+    })
+  }
+
 const moveSnake = () => { 
     if (snake[snake.length - 1].direction !== direction) {
         snake[snake.length - 1].direction = direction
@@ -115,6 +131,7 @@ const moveSnake = () => {
     }
 
     snake.forEach(square => moveSquare(square))
+    didSnakeBiteItSelf()
 }
 
 const draw = (ctx, location, w, h, color) => {
