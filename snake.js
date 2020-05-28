@@ -57,12 +57,12 @@ let snake = [
     }
 ]
 
-const apple = getRandomPosition()
+let apple = getRandomPosition()
 
 let direction = 'right'
 
-let dx = 2
-let dy = 2
+let dx = 4
+let dy = 4
 
 const moveSquare = (square) => {
     if (square.breakpoints.length && square.x === square.breakpoints[0].x && square.y === square.breakpoints[0].y) {
@@ -115,7 +115,47 @@ const didSnakeBiteItSelf = () => {
         alert('game over!!!')
       }
     })
-  }
+}
+
+const didSnakeEatApple = () => {
+    let head = snake[snake.length - 1]
+
+    if (head.x + 20 >= apple.x && head.x <= apple.x + 20 && head.y + 20 >= apple.y && head.y <= apple.y + 20) {
+        snake.unshift({
+            x: (snake[0].direction === 'right') ? (snake[0].x - 20) : ((snake[0].direction === 'left') ? (snake[0].x + 20) : (snake[0].x)),
+            y: (snake[0].direction === 'down') ? (snake[0].y - 20) : ((snake[0].direction === 'up') ? (snake[0].y + 20) : (snake[0].y)),
+            direction: snake[0].direction,
+            breakpoints: [...snake[0].breakpoints]
+        })
+
+        // switch (snake[0].direction) {
+        //     case ('right'):
+        //         snake.unshift({
+        //             x: snake[0].x - 20,
+        //             y: snake[0].y,
+        //             direction: snake[0].direction,
+        //             breakpoints: [...snake[0].breakpoints]
+        //         })
+        //         break
+        //     case ('left'):
+        //         snake.unshift({
+        //             x: snake[0].x + 20,
+        //             y: snake[0].y,
+        //             direction: snake[0].direction,
+        //             breakpoints: [...snake[0].breakpoints]
+        //         })
+        // }
+        
+        apple = getRandomPosition()
+    }
+
+    // if (head.x === applePosition[0] && head[1] === applePosition[1]) {
+    //   let enlargedSnake = [...snake]
+    //   enlargedSnake.unshift([])
+    //   setApplePosition(getRandomPosition())
+    //   setSnake(enlargedSnake)
+    // }
+}
 
 const moveSnake = () => { 
     if (snake[snake.length - 1].direction !== direction) {
@@ -132,6 +172,7 @@ const moveSnake = () => {
 
     snake.forEach(square => moveSquare(square))
     didSnakeBiteItSelf()
+    didSnakeEatApple()
 }
 
 const draw = (ctx, location, w, h, color) => {
