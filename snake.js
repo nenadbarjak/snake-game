@@ -41,13 +41,19 @@ const getRandomPosition = () => {
 let snake = [
     {
         x: 0,
-        y: 160
+        y: 120,
+        direction: 'down',
+        breakpoints: []
     }, {
-        x: 20,
-        y: 160
+        x: 0,
+        y: 140,
+        direction: 'down',
+        breakpoints: []
     }, {
-        x: 40,
-        y: 160
+        x: 0,
+        y: 160,
+        direction: 'down',
+        breakpoints: []
     }
 ]
 
@@ -55,43 +61,60 @@ const apple = getRandomPosition()
 
 let direction = 'right'
 
-const moveSnake = () => {
-    let head = snake[snake.length - 1]
-    switch (direction) {
+let dx = 2
+let dy = 2
+
+const moveSquare = (square) => {
+    if (square.breakpoints.length && square.x === square.breakpoints[0].x && square.y === square.breakpoints[0].y) {
+        square.direction = square.breakpoints[0].direction
+        square.breakpoints.shift()
+    }
+
+    switch (square.direction) {
         case ('right'):
-            if (head.x === canvas.width -20) {
-                head = { x: 0, y: head.y}
-            } else {
-                head = { x: head.x + 20, y: head.y}
+            square.x = square.x + dx
+            if (square.x >= canvas.width) {
+                square.x = 0 + square.x - canvas.width
             }
             break
 
         case ('left'):
-            if (head.x === 0) {
-                head = { x: canvas.width -20, y: head.y}
-            } else {
-                head = { x: head.x - 20, y: head.y}
+            square.x = square.x - dx
+            if (square.x <= 0) {
+                square.x = canvas.width + square.x
             }
             break
 
         case ('down'):
-            if (head.y === canvas.height - 20) {
-                head = { x: head.x, y: 0}
-            } else {
-                head = { x: head.x , y: head.y + 20}
+            square.y = square.y + dy
+            if (square.y >= canvas.height) {
+                square.y = 0 + square.y - canvas.height
             }
             break
-
+        
         case ('up'):
-            if (head.y === 0) {
-                head = { x: head.x, y: canvas.height - 20}
-            } else {
-                head = { x: head.x , y: head.y - 20}
+            square.y = square.y - dy
+            if (square.y <= 0) {
+                square.y = canvas.height + square.y
             }
-            break
+            break        
+    }    
+}
+
+const moveSnake = () => { 
+    if (snake[snake.length - 1].direction !== direction) {
+        snake[snake.length - 1].direction = direction
+        
+        snake.forEach((square) => {
+            square.breakpoints.push({
+                x: snake[snake.length - 1].x,
+                y: snake[snake.length - 1].y,
+                direction: snake[snake.length - 1].direction
+            })
+        })
     }
-    snake.push(head)
-    snake.shift()
+
+    snake.forEach(square => moveSquare(square))
 }
 
 const draw = (ctx, location, w, h, color) => {
@@ -102,9 +125,6 @@ const draw = (ctx, location, w, h, color) => {
     ctx.strokeRect(location.x, location.y, w, h)
 }
 
-let counter = 1
-let speed = 0
-
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
@@ -114,10 +134,7 @@ const update = () => {
         draw(ctx, { x: square.x, y: square.y }, 20, 20, '#000')
     })
 
-    if (counter === 1 || counter % (10 - speed) === 0) {
-        moveSnake()
-    }
-    counter++
+    moveSnake()
 
     requestAnimationFrame(update)
 }
