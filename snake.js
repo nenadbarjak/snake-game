@@ -9,19 +9,19 @@ const onKeyDown = (e) => {
     switch (e.keyCode) {
       case 37:
       case 65:
-        direction = 'left'
+        snake[snake.length - 1].direction === 'right' ? gameOver() : direction = 'left'
         break
       case 38:
       case 87:
-        direction = 'up'
+        snake[snake.length - 1].direction === 'down' ? gameOver() : direction = 'up'
         break
       case 39:
       case 68:
-        direction = 'right'
+        snake[snake.length - 1].direction === 'left' ? gameOver() : direction = 'right'
         break
       case 40:
       case 83:
-        direction = 'down'
+        snake[snake.length - 1].direction === 'up' ? gameOver() : direction = 'down'
         break
     }
 }
