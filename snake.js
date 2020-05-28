@@ -110,11 +110,11 @@ const didSnakeBiteItSelf = () => {
     let squares = [...snake]
     const head = squares.pop()
 
-    squares.forEach(square => {
-      if (square.x === head.x && square.y === head.y) {
-        alert('game over!!!')
-      }
-    })
+    for (let i = 0; i < squares.length -2; i++) {
+        if (head.x + 20 >= squares[i].x && head.x <= squares[i].x + 20 && head.y + 20 >= squares[i].y && head.y <= squares[i].y +20) {
+            alert('game over!!!')
+        }
+    }
 }
 
 const didSnakeEatApple = () => {
@@ -128,33 +128,8 @@ const didSnakeEatApple = () => {
             breakpoints: [...snake[0].breakpoints]
         })
 
-        // switch (snake[0].direction) {
-        //     case ('right'):
-        //         snake.unshift({
-        //             x: snake[0].x - 20,
-        //             y: snake[0].y,
-        //             direction: snake[0].direction,
-        //             breakpoints: [...snake[0].breakpoints]
-        //         })
-        //         break
-        //     case ('left'):
-        //         snake.unshift({
-        //             x: snake[0].x + 20,
-        //             y: snake[0].y,
-        //             direction: snake[0].direction,
-        //             breakpoints: [...snake[0].breakpoints]
-        //         })
-        // }
-        
         apple = getRandomPosition()
     }
-
-    // if (head.x === applePosition[0] && head[1] === applePosition[1]) {
-    //   let enlargedSnake = [...snake]
-    //   enlargedSnake.unshift([])
-    //   setApplePosition(getRandomPosition())
-    //   setSnake(enlargedSnake)
-    // }
 }
 
 const moveSnake = () => { 
