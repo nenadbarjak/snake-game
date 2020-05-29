@@ -6,8 +6,15 @@
     <title>Snake</title>
 </head>
 <body>
+    <h1 id="scoreboard">0</h1>
+    <input type="range" name="speed" id="speed-slider" min=1 max=5 step="1" value="1">
+    <!-- <datalist id="speed-list">
+        <option value="1" label="slow"></option>
+        <option value="2" label="normal"></option>
+        <option value="4" label="fast"></option>
+        <option value="10" label="insane"></option>
+    </datalist> -->
     <canvas id="canvas" width="600" height="600"></canvas>
-
     <script src="snake.js"></script>
 </body>
 </html>

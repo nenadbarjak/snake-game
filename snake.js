@@ -3,7 +3,33 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+let dx = 1
+let dy = 1
 
+document.getElementById('speed-slider').addEventListener('change', (e) => {
+    switch (e.target.value) {
+        case '1':
+            dx = 1
+            dy = 1
+            break
+        case '2':
+            dx = 2
+            dy = 2
+            break
+        case '3':
+            dx = 4
+            dy = 4
+            break
+        case '4':
+            dx = 5
+            dy = 5
+            break
+        case '5':
+            dx = 10
+            dy = 10
+            break
+    }
+})
 
 const onKeyDown = (e) => {
     switch (e.keyCode) {
@@ -61,8 +87,9 @@ let apple = getRandomPosition()
 
 let direction = 'right'
 
-let dx = 4
-let dy = 4
+
+
+let score = 0
 
 const moveSquare = (square) => {
     if (square.breakpoints.length && square.x === square.breakpoints[0].x && square.y === square.breakpoints[0].y) {
@@ -129,6 +156,8 @@ const didSnakeEatApple = () => {
         })
 
         apple = getRandomPosition()
+        score++
+        document.getElementById('scoreboard').innerHTML = score
     }
 }
 
