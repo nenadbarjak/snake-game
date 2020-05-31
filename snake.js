@@ -92,11 +92,11 @@ const wallsTemplate = {
     level_2: [
         {
             xStart: 0, 
-            xEnd: 150,
+            xEnd: 100,
             yStart: 0,
             yEnd: 0
         }, {
-            xStart: canvas.width - 150, 
+            xStart: canvas.width - 100, 
             xEnd: canvas.width,
             yStart: 0,
             yEnd: 0
@@ -104,29 +104,29 @@ const wallsTemplate = {
             xStart: 0, 
             xEnd: 0,
             yStart: 0,
-            yEnd: 150
+            yEnd: 100
         }, {
             xStart: canvas.width, 
             xEnd: canvas.width,
             yStart: 0,
-            yEnd: 150
+            yEnd: 100
         }, {
             xStart: 0, 
             xEnd: 0,
-            yStart: canvas.height - 150,
+            yStart: canvas.height - 100,
             yEnd: canvas.height
         }, {
             xStart: canvas.width, 
             xEnd: canvas.width,
-            yStart: canvas.height - 150,
+            yStart: canvas.height - 100,
             yEnd: canvas.height
         }, {
             xStart: 0, 
-            xEnd: 150,
+            xEnd: 100,
             yStart: canvas.height,
             yEnd: canvas.height
         }, {
-            xStart: canvas.width - 150, 
+            xStart: canvas.width - 100, 
             xEnd: canvas.width,
             yStart: canvas.height,
             yEnd: canvas.height
@@ -157,7 +157,8 @@ const wallsTemplate = {
     ]
 }
 
-let walls = wallsTemplate.level_2
+let walls = wallsTemplate.level_1
+let level = 1
 
 let score = 0
 
@@ -240,6 +241,18 @@ const didSnakeEatApple = () => {
         apple = getRandomPosition()
         score++
         document.getElementById('scoreboard').innerHTML = score
+
+        // TODO: Prebaciti ovo u posebnu funkciju. Naci resenje za slucaj da se score uveca za 2 na 14 ili 29
+        if (score % 15 === 0) {
+            let tempSnake = []
+            for (let i = snake.length - 1; i >= snake.length - 3; i--) {
+                tempSnake.push(snake[i])
+            }
+            let newSnake = tempSnake.reverse()
+            snake = [...newSnake]
+            level = level < 3 ? level + 1 : level
+            walls = wallsTemplate[`level_${level}`]
+        } 
     }
 }
 
