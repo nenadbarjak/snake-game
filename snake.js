@@ -67,18 +67,18 @@ const getRandomPosition = () => {
 let snake = [
     {
         x: 0,
-        y: 120,
-        direction: 'down',
-        breakpoints: []
-    }, {
-        x: 0,
-        y: 140,
-        direction: 'down',
-        breakpoints: []
-    }, {
-        x: 0,
         y: 160,
-        direction: 'down',
+        direction: 'right',
+        breakpoints: []
+    }, {
+        x: 20,
+        y: 160,
+        direction: 'right',
+        breakpoints: []
+    }, {
+        x: 40,
+        y: 160,
+        direction: 'right',
         breakpoints: []
     }
 ]
@@ -87,7 +87,77 @@ let apple = getRandomPosition()
 
 let direction = 'right'
 
+const wallsTemplate = {
+    level_1: [],
+    level_2: [
+        {
+            xStart: 0, 
+            xEnd: 150,
+            yStart: 0,
+            yEnd: 0
+        }, {
+            xStart: canvas.width - 150, 
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: 0
+        }, {
+            xStart: 0, 
+            xEnd: 0,
+            yStart: 0,
+            yEnd: 150
+        }, {
+            xStart: canvas.width, 
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: 150
+        }, {
+            xStart: 0, 
+            xEnd: 0,
+            yStart: canvas.height - 150,
+            yEnd: canvas.height
+        }, {
+            xStart: canvas.width, 
+            xEnd: canvas.width,
+            yStart: canvas.height - 150,
+            yEnd: canvas.height
+        }, {
+            xStart: 0, 
+            xEnd: 150,
+            yStart: canvas.height,
+            yEnd: canvas.height
+        }, {
+            xStart: canvas.width - 150, 
+            xEnd: canvas.width,
+            yStart: canvas.height,
+            yEnd: canvas.height
+        }
+    ],
+    level_3: [
+        {
+            xStart: 0,
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: 0
+        }, {
+            xStart: canvas.width,
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: canvas.height
+        }, {
+            xStart: 0,
+            xEnd: 0,
+            yStart: 0,
+            yEnd: canvas.height
+        }, {
+            xStart: 0,
+            xEnd: canvas.width,
+            yStart: canvas.height,
+            yEnd: canvas.height
+        }
+    ]
+}
 
+let walls = wallsTemplate.level_2
 
 let score = 0
 
@@ -100,28 +170,40 @@ const moveSquare = (square) => {
     switch (square.direction) {
         case ('right'):
             square.x = square.x + dx
-            if (square.x >= canvas.width) {
+
+            if (walls.length && walls.some(wall => (square.x + 20 >= canvas.width && square.y + 20 >= wall.yStart && square.y <= wall.yEnd) || (((square.y <= 5) || (square.y + 20 >= canvas.height - 5)) && (square.x + 20 >= wall.xStart && square.x + 20 <= wall.xEnd)))) {
+                gameOver()
+            } else if (square.x >= canvas.width) {
                 square.x = 0 + square.x - canvas.width
             }
             break
 
         case ('left'):
             square.x = square.x - dx
-            if (square.x <= 0) {
+
+            if (walls.length && walls.some(wall => (square.x <= 0  && square.y + 20 >= wall.yStart && square.y <= wall.yEnd) || (square.x >= wall.xStart && square.x <= wall.xEnd && ((square.y + 20 >= canvas.height - 5) || (square.y <= 5))))) {
+                gameOver()
+            } else if (square.x <= 0) {
                 square.x = canvas.width + square.x
             }
             break
 
         case ('down'):
             square.y = square.y + dy
-            if (square.y >= canvas.height) {
+
+            if (walls.length && walls.some(wall => (square.x + 20 >= wall.xStart && square.x <= wall.xEnd && square.y + 20 >= canvas.height) || (((square.x <= 5) || (square.x + 20 >= canvas.width - 5)) && (square.y + 20 >= wall.yStart && square.y <= wall.yEnd)))) {
+                gameOver()
+            } else if (square.y >= canvas.height) {
                 square.y = 0 + square.y - canvas.height
             }
             break
         
         case ('up'):
             square.y = square.y - dy
-            if (square.y <= 0) {
+
+            if (walls.length && walls.some(wall => (square.x + 20 >= wall.xStart && square.x <= wall.xEnd && square.y <= 0) || (((square.x <= 5) || (square.x + 20 >= canvas.width - 5)) && (square.y >= wall.yStart && square.y <= wall.yEnd)))) {
+                gameOver()
+            } else if (square.y <= 0) {
                 square.y = canvas.height + square.y
             }
             break        
@@ -187,8 +269,19 @@ const draw = (ctx, location, w, h, color) => {
     ctx.strokeRect(location.x, location.y, w, h)
 }
 
+const drawWalls = (location) => {
+    ctx.beginPath()
+    ctx.lineWidth = 10
+    ctx.strokeStyle = '#000'
+    ctx.moveTo(location.xStart, location.yStart)
+    ctx.lineTo(location.xEnd, location.yEnd)
+    ctx.stroke()
+}
+
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
+
+    walls.forEach(wall => drawWalls(wall))
 
     draw(ctx, { x: apple.x, y: apple.y}, 20, 20)
 
