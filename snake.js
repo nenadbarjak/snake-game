@@ -33,22 +33,24 @@ document.getElementById('speed-slider').addEventListener('change', (e) => {
 
 const onKeyDown = (e) => {
     switch (e.keyCode) {
-      case 37:
-      case 65:
-        snake[snake.length - 1].direction === 'right' ? gameOver() : direction = 'left'
-        break
-      case 38:
-      case 87:
-        snake[snake.length - 1].direction === 'down' ? gameOver() : direction = 'up'
-        break
-      case 39:
-      case 68:
-        snake[snake.length - 1].direction === 'left' ? gameOver() : direction = 'right'
-        break
-      case 40:
-      case 83:
-        snake[snake.length - 1].direction === 'up' ? gameOver() : direction = 'down'
-        break
+        case 37:
+        case 65:
+            snake[snake.length - 1].direction === 'right' ? gameOver() : direction = 'left'
+            break
+        case 38:
+        case 87:
+            snake[snake.length - 1].direction === 'down' ? gameOver() : direction = 'up'
+            break
+        case 39:
+        case 68:
+            snake[snake.length - 1].direction === 'left' ? gameOver() : direction = 'right'
+            break
+        case 40:
+        case 83:
+            snake[snake.length - 1].direction === 'up' ? gameOver() : direction = 'down'
+            break
+        case 32:
+            playing = !playing
     }
 }
 
@@ -291,6 +293,8 @@ const drawWalls = (location) => {
     ctx.stroke()
 }
 
+let playing = false
+
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
@@ -302,7 +306,7 @@ const update = () => {
         draw(ctx, { x: square.x, y: square.y }, 20, 20, '#000')
     })
 
-    moveSnake()
+    playing && moveSnake()
 
     requestAnimationFrame(update)
 }
