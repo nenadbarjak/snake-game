@@ -5,6 +5,8 @@ const ctx = canvas.getContext('2d')
 
 let dx = 1
 let dy = 1
+const appleImg = document.getElementById('apple')
+const bananaImg = document.getElementById('banana')
 
 document.getElementById('speed-slider').addEventListener('change', (e) => {
     switch (e.target.value) {
@@ -66,6 +68,35 @@ const getRandomPosition = () => {
     return {x, y}
 }
 
+const getRandomNumber = () => {
+    let min = 1
+    let max = 10
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const getFruit = () => {
+    const apple = {
+        img: appleImg,
+        value: 1
+    }
+    
+    const banana = {
+        img: bananaImg,
+        value: 2
+    }
+
+    let randomNum = getRandomNumber()
+    let current = randomNum === 1 ? banana : apple
+    let coords = getRandomPosition()
+
+    return {
+        current,
+        x: coords.x,
+        y: coords.y
+    }
+
+}
+
 let snake = [
     {
         x: 0,
@@ -85,7 +116,8 @@ let snake = [
     }
 ]
 
-let apple = getRandomPosition()
+// let apple = getRandomPosition()
+let fruit = getFruit()
 
 let direction = 'right'
 
@@ -229,10 +261,10 @@ const didSnakeBiteItSelf = () => {
     }
 }
 
-const didSnakeEatApple = () => {
+const didSnakeEatFruit = () => {
     let head = snake[snake.length - 1]
 
-    if (head.x + 20 >= apple.x && head.x <= apple.x + 20 && head.y + 20 >= apple.y && head.y <= apple.y + 20) {
+    if (head.x + 20 >= fruit.x && head.x <= fruit.x + 20 && head.y + 20 >= fruit.y && head.y <= fruit.y + 20) {
         snake.unshift({
             x: (snake[0].direction === 'right') ? (snake[0].x - 20) : ((snake[0].direction === 'left') ? (snake[0].x + 20) : (snake[0].x)),
             y: (snake[0].direction === 'down') ? (snake[0].y - 20) : ((snake[0].direction === 'up') ? (snake[0].y + 20) : (snake[0].y)),
@@ -240,9 +272,9 @@ const didSnakeEatApple = () => {
             breakpoints: [...snake[0].breakpoints]
         })
 
-        apple = getRandomPosition()
-        score++
+        score += fruit.current.value
         document.getElementById('scoreboard').innerHTML = score
+        fruit = getFruit()
 
         // TODO: Prebaciti ovo u posebnu funkciju. Naci resenje za slucaj da se score uveca za 2 na 14 ili 29
         if (score % 15 === 0) {
@@ -273,15 +305,15 @@ const moveSnake = () => {
 
     snake.forEach(square => moveSquare(square))
     didSnakeBiteItSelf()
-    didSnakeEatApple()
+    didSnakeEatFruit()
 }
 
-const draw = (ctx, location, w, h, color) => {
-    ctx.fillStyle = color || 'red'
-    ctx.fillRect(location.x, location.y, w, h)
+const drawSnake = (x, y) => {
+    ctx.fillStyle = '#000'
+    ctx.fillRect(x, y, 20, 20)
     ctx.strokeStyle = '#fff'
     ctx.lineWidth = 2
-    ctx.strokeRect(location.x, location.y, w, h)
+    ctx.strokeRect(x, y, 20, 20)
 }
 
 const drawWalls = (location) => {
@@ -293,17 +325,23 @@ const drawWalls = (location) => {
     ctx.stroke()
 }
 
+const drawFruit = () => {
+    ctx.drawImage(fruit.current.img, fruit.x, fruit.y, 20, 20)
+}
+
 let playing = false
+
 
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
     walls.forEach(wall => drawWalls(wall))
 
-    draw(ctx, { x: apple.x, y: apple.y}, 20, 20)
+    drawFruit()
+
 
     snake.forEach(square => {           
-        draw(ctx, { x: square.x, y: square.y }, 20, 20, '#000')
+        drawSnake(square.x, square.y)
     })
 
     playing && moveSnake()
