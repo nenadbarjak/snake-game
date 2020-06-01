@@ -279,8 +279,27 @@ const reset = () => {
     document.getElementById('scoreboard').innerHTML = score
 }
 
+const logHighScores = () => {
+    let scores = JSON.parse(localStorage.getItem('scores'))
+    scores.push(score)
+    scores.sort((a, b) => b - a)
+    localStorage.setItem('scores', JSON.stringify(scores))
+    
+    const highScores = document.getElementById('high-scores')
+    if (highScores.hasChildNodes) {
+        highScores.innerHTML = ''
+    }
+    for (let i=0; i<3 && i<scores.length; i++) {
+        let scoreItem = document.createElement('li')
+        scoreItem.innerHTML = `${scores[i]} points`
+        highScores.appendChild(scoreItem)
+    }
+}
+
 const gameOver = () => {
     playing = false
+
+    logHighScores()
 
     document.getElementById('die').play().then(() => {
         if (confirm(`Game over!!! Your score is ${score}.\nDo you want to play again?`)) {
@@ -422,3 +441,6 @@ document.getElementById('quit-btn').addEventListener('click', () => {
     reset()
     document.getElementById('start').style.display = 'flex'
 })
+
+let scores = []
+localStorage.setItem('scores', JSON.stringify(scores))
