@@ -3,8 +3,8 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
-let dx = 1
-let dy = 1
+let dx = 4
+let dy = 4
 const appleImg = document.getElementById('apple')
 const bananaImg = document.getElementById('banana')
 
@@ -242,10 +242,49 @@ const moveSquare = (square) => {
     }    
 }
 
+const reset = () => {
+    snake = [
+        {
+            x: 0,
+            y: 160,
+            direction: 'right',
+            breakpoints: []
+        }, {
+            x: 20,
+            y: 160,
+            direction: 'right',
+            breakpoints: []
+        }, {
+            x: 40,
+            y: 160,
+            direction: 'right',
+            breakpoints: []
+        }
+    ]
+    direction = 'right'
+    dx = 4
+    dy = 4
+    fruit = getFruit()
+    walls = wallsTemplate.level_1
+    level = 1
+    score = 0
+    document.getElementById('scoreboard').innerHTML = score
+}
+
 const gameOver = () => {
-    document.getElementById('die').play()
-    alert('Game Over!')
-    
+    playing = false
+
+    document.getElementById('die').play().then(() => {
+        if (confirm(`Game over!!! Your score is ${score}.\nDo you want to play again?`)) {
+            reset()
+        } else {
+            reset()
+            document.getElementById('start').style.display = 'flex'
+        }
+    }).catch((e) => {
+        console.log(e)
+    })
+       
 }
 
 const didSnakeBiteItSelf = () => {
@@ -354,3 +393,18 @@ const update = () => {
 }
 
 update()
+
+document.getElementById('level-select').addEventListener('change', (e) => {
+    level = e.target.value
+    walls = wallsTemplate[`level_${level}`]
+})
+
+document.getElementById('play-btn').addEventListener('click', () => {
+    document.getElementById('start').style.display = 'none'
+})
+
+document.getElementById('quit-btn').addEventListener('click', () => {
+    playing = false
+    reset()
+    document.getElementById('start').style.display = 'flex'
+})

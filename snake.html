@@ -6,15 +6,32 @@
     <title>Snake</title>
 </head>
 <body>
-    <h1 id="scoreboard">0</h1>
-    <input type="range" name="speed" id="speed-slider" min=1 max=5 step="1" value="1">
-    <!-- <datalist id="speed-list">
-        <option value="1" label="slow"></option>
-        <option value="2" label="normal"></option>
-        <option value="4" label="fast"></option>
-        <option value="10" label="insane"></option>
-    </datalist> -->
-    <canvas id="canvas" width="400" height="400"></canvas>
+    <div class="game-area">
+        <div id="start">
+            <img src="img/snake.png" alt="">
+            <h1>Snake</h1>
+            <label class="speed"> 
+                Set speed
+                <input type="range" name="speed" id="speed-slider" min=1 max=5 step="1" value="3">
+            </label>
+            <label>
+                Select level
+                <Select id="level-select">
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                </Select>
+            </label>
+            <button id="play-btn" class="btn">Play</button>
+        </div>
+        <canvas id="canvas" width="400" height="400"></canvas>
+    </div>
+    <div class="scores">
+        <h1>Current Score:</h1>
+        <h1 id="scoreboard">0</h1>
+        <button id="quit-btn" class="btn btn--quit">Quit</button>
+    </div>
+    
     <img src="img/apple.png" alt="" id="apple">
     <img src="img/banana.png" alt="" id="banana">
 
