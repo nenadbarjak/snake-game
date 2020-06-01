@@ -243,6 +243,7 @@ const moveSquare = (square) => {
 }
 
 const gameOver = () => {
+    document.getElementById('die').play()
     alert('Game Over!')
     
 }
@@ -253,7 +254,7 @@ const didSnakeBiteItSelf = () => {
 
     for (let i = 0; i < squares.length -2; i++) {
         if (head.x + 20 >= squares[i].x && head.x <= squares[i].x + 20 && head.y + 20 >= squares[i].y && head.y <= squares[i].y +20) {
-            alert('game over!!!')
+            gameOver()
         }
     }
 }
@@ -268,7 +269,7 @@ const didSnakeEatFruit = () => {
             direction: snake[0].direction,
             breakpoints: [...snake[0].breakpoints]
         })
-
+        document.getElementById('eat').play()
         score += fruit.current.value
         document.getElementById('scoreboard').innerHTML = score
         fruit = getFruit()
@@ -276,6 +277,7 @@ const didSnakeEatFruit = () => {
 }
 
 const increaseLevel = () => {
+    document.getElementById('levelup').play()
     let tempSnake = []
     playing = !playing
     setTimeout(() => {
