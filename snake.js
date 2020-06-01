@@ -53,6 +53,7 @@ const onKeyDown = (e) => {
             break
         case 32:
             playing = !playing
+            paused = !paused
             break
         case 27:
             playing = false
@@ -274,6 +275,7 @@ const reset = () => {
     walls = wallsTemplate.level_1
     level = 1
     score = 0
+    paused = true
     document.getElementById('scoreboard').innerHTML = score
 }
 
@@ -378,8 +380,14 @@ const drawFruit = () => {
     ctx.drawImage(fruit.current.img, fruit.x, fruit.y, 20, 20)
 }
 
-let playing = false
+const pausedText = () => {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#fff";
+    ctx.fillText("Press SPACE to play", 8, 20);
+}
 
+let playing = false
+let paused = true
 
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
@@ -392,7 +400,7 @@ const update = () => {
     snake.forEach(square => {           
         drawSnake(square.x, square.y)
     })
-
+    paused && pausedText()
     playing && moveSnake()
 
     requestAnimationFrame(update)
