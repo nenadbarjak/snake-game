@@ -53,6 +53,12 @@ const onKeyDown = (e) => {
             break
         case 32:
             playing = !playing
+            break
+        case 27:
+            playing = false
+            reset()
+            document.getElementById('start').style.display = 'flex'
+            break
     }
 }
 
