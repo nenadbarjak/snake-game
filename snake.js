@@ -68,9 +68,7 @@ const getRandomPosition = () => {
     return {x, y}
 }
 
-const getRandomNumber = () => {
-    let min = 1
-    let max = 10
+const getRandomNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
@@ -85,7 +83,7 @@ const getFruit = () => {
         value: 2
     }
 
-    let randomNum = getRandomNumber()
+    let randomNum = getRandomNumber(1, 10)
     let current = randomNum === 1 ? banana : apple
     let coords = getRandomPosition()
 
@@ -116,7 +114,6 @@ let snake = [
     }
 ]
 
-// let apple = getRandomPosition()
 let fruit = getFruit()
 
 let direction = 'right'
@@ -275,19 +272,22 @@ const didSnakeEatFruit = () => {
         score += fruit.current.value
         document.getElementById('scoreboard').innerHTML = score
         fruit = getFruit()
-
-        // TODO: Prebaciti ovo u posebnu funkciju. Naci resenje za slucaj da se score uveca za 2 na 14 ili 29
-        if (score % 15 === 0) {
-            let tempSnake = []
-            for (let i = snake.length - 1; i >= snake.length - 3; i--) {
-                tempSnake.push(snake[i])
-            }
-            let newSnake = tempSnake.reverse()
-            snake = [...newSnake]
-            level = level < 3 ? level + 1 : level
-            walls = wallsTemplate[`level_${level}`]
-        } 
     }
+}
+
+const increaseLevel = () => {
+    let tempSnake = []
+    playing = !playing
+    setTimeout(() => {
+        playing = !playing
+    }, 3000)
+    for (let i = snake.length - 1; i >= snake.length - 3; i--) {
+        tempSnake.push(snake[i])
+    }
+    let newSnake = tempSnake.reverse()
+    snake = [...newSnake]
+    level = level < 3 ? level + 1 : level
+    walls = wallsTemplate[`level_${level}`]
 }
 
 const moveSnake = () => { 
@@ -306,6 +306,8 @@ const moveSnake = () => {
     snake.forEach(square => moveSquare(square))
     didSnakeBiteItSelf()
     didSnakeEatFruit()
+
+    level < 3 && snake.length > 18 && increaseLevel()
 }
 
 const drawSnake = (x, y) => {
