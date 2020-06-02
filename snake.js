@@ -133,8 +133,6 @@ const onKeyDown = (e) => {
     }
 }
 
-document.addEventListener('keydown', onKeyDown)
-
 const getRandomPosition = () => {
     const min = 0
     let maxX = canvas.width - 20
@@ -398,6 +396,9 @@ const update = () => {
 }
 
 update()
+
+
+document.addEventListener('keydown', onKeyDown)
 
 document.getElementById('speed-slider').addEventListener('change', (e) => {
     switch (e.target.value) {
