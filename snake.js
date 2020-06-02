@@ -425,7 +425,7 @@ document.getElementById('speed-slider').addEventListener('change', (e) => {
 })
 
 document.getElementById('level-select').addEventListener('change', (e) => {
-    level = e.target.value
+    level = Number(e.target.value)
     walls = wallsTemplate[`level_${level}`]
 })
 
