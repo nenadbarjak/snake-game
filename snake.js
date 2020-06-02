@@ -3,104 +3,8 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
-let dx = 4
-let dy = 4
 const appleImg = document.getElementById('apple')
 const bananaImg = document.getElementById('banana')
-
-document.getElementById('speed-slider').addEventListener('change', (e) => {
-    switch (e.target.value) {
-        case '1':
-            dx = 1
-            dy = 1
-            break
-        case '2':
-            dx = 2
-            dy = 2
-            break
-        case '3':
-            dx = 4
-            dy = 4
-            break
-        case '4':
-            dx = 5
-            dy = 5
-            break
-        case '5':
-            dx = 10
-            dy = 10
-            break
-    }
-})
-
-const onKeyDown = (e) => {
-    switch (e.keyCode) {
-        case 37:
-        case 65:
-            snake[snake.length - 1].direction === 'right' ? gameOver() : direction = 'left'
-            break
-        case 38:
-        case 87:
-            snake[snake.length - 1].direction === 'down' ? gameOver() : direction = 'up'
-            break
-        case 39:
-        case 68:
-            snake[snake.length - 1].direction === 'left' ? gameOver() : direction = 'right'
-            break
-        case 40:
-        case 83:
-            snake[snake.length - 1].direction === 'up' ? gameOver() : direction = 'down'
-            break
-        case 32:
-            playing = !playing
-            paused = !paused
-            break
-        case 27:
-            playing = false
-            reset()
-            document.getElementById('start').style.display = 'flex'
-            break
-    }
-}
-
-document.addEventListener('keydown', onKeyDown)
-
-const getRandomPosition = () => {
-    const min = 0
-    let maxX = canvas.width - 20
-    let maxY = canvas.height - 20
-    let x = Math.floor((Math.random() * (maxX - min + 1) + min) / 20) * 20
-    let y = Math.floor((Math.random() * (maxY - min + 1) + min) / 20) * 20
-
-    return {x, y}
-}
-
-const getRandomNumber = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-const getFruit = () => {
-    const apple = {
-        img: appleImg,
-        value: 1
-    }
-    
-    const banana = {
-        img: bananaImg,
-        value: 2
-    }
-
-    let randomNum = getRandomNumber(1, 10)
-    let current = randomNum === 1 ? banana : apple
-    let coords = getRandomPosition()
-
-    return {
-        current,
-        x: coords.x,
-        y: coords.y
-    }
-
-}
 
 let snake = [
     {
@@ -120,11 +24,9 @@ let snake = [
         breakpoints: []
     }
 ]
-
-let fruit = getFruit()
-
+let dx = 4
+let dy = 4
 let direction = 'right'
-
 const wallsTemplate = {
     level_1: [],
     level_2: [
@@ -194,11 +96,81 @@ const wallsTemplate = {
         }
     ]
 }
-
 let walls = wallsTemplate.level_1
 let level = 1
-
 let score = 0
+let playing = false
+let paused = true
+
+
+const onKeyDown = (e) => {
+    switch (e.keyCode) {
+        case 37:
+        case 65:
+            snake[snake.length - 1].direction === 'right' ? gameOver() : direction = 'left'
+            break
+        case 38:
+        case 87:
+            snake[snake.length - 1].direction === 'down' ? gameOver() : direction = 'up'
+            break
+        case 39:
+        case 68:
+            snake[snake.length - 1].direction === 'left' ? gameOver() : direction = 'right'
+            break
+        case 40:
+        case 83:
+            snake[snake.length - 1].direction === 'up' ? gameOver() : direction = 'down'
+            break
+        case 32:
+            playing = !playing
+            paused = !paused
+            break
+        case 27:
+            playing = false
+            reset()
+            document.getElementById('start').style.display = 'flex'
+            break
+    }
+}
+
+const getRandomPosition = () => {
+    const min = 0
+    let maxX = canvas.width - 20
+    let maxY = canvas.height - 20
+    let x = Math.floor((Math.random() * (maxX - min + 1) + min) / 20) * 20
+    let y = Math.floor((Math.random() * (maxY - min + 1) + min) / 20) * 20
+
+    return {x, y}
+}
+
+const getRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const getFruit = () => {
+    const apple = {
+        img: appleImg,
+        value: 1
+    }
+    
+    const banana = {
+        img: bananaImg,
+        value: 2
+    }
+
+    let randomNum = getRandomNumber(1, 10)
+    let current = randomNum === 1 ? banana : apple
+    let coords = getRandomPosition()
+
+    return {
+        current,
+        x: coords.x,
+        y: coords.y
+    }
+
+}
+
+let fruit = getFruit()
 
 const moveSquare = (square) => {
     if (square.breakpoints.length && square.x === square.breakpoints[0].x && square.y === square.breakpoints[0].y) {
@@ -405,9 +377,6 @@ const pausedText = () => {
     ctx.fillText("Press SPACE to play", 8, 20);
 }
 
-let playing = false
-let paused = true
-
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
@@ -415,11 +384,12 @@ const update = () => {
 
     drawFruit()
 
-
     snake.forEach(square => {           
         drawSnake(square.x, square.y)
     })
+
     paused && pausedText()
+
     playing && moveSnake()
 
     requestAnimationFrame(update)
@@ -427,8 +397,36 @@ const update = () => {
 
 update()
 
+
+document.addEventListener('keydown', onKeyDown)
+
+document.getElementById('speed-slider').addEventListener('change', (e) => {
+    switch (e.target.value) {
+        case '1':
+            dx = 1
+            dy = 1
+            break
+        case '2':
+            dx = 2
+            dy = 2
+            break
+        case '3':
+            dx = 4
+            dy = 4
+            break
+        case '4':
+            dx = 5
+            dy = 5
+            break
+        case '5':
+            dx = 10
+            dy = 10
+            break
+    }
+})
+
 document.getElementById('level-select').addEventListener('change', (e) => {
-    level = e.target.value
+    level = Number(e.target.value)
     walls = wallsTemplate[`level_${level}`]
 })
 
