@@ -6,8 +6,52 @@
     <title>Snake</title>
 </head>
 <body>
-    <canvas id="canvas" width="600" height="600"></canvas>
+    <div class="game-area">
+        <div id="start">
+            <img src="img/snake.png" alt="">
+            <h1>Snake</h1>
+            <label class="speed"> 
+                Set speed
+                <input type="range" name="speed" id="speed-slider" min=1 max=5 step="1" value="3">
+            </label>
+            <label>
+                Select level
+                <Select id="level-select">
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                </Select>
+            </label>
+            <button id="play-btn" class="btn">Play</button>
+        </div>
+        <canvas id="canvas" width="400" height="400"></canvas>
+    </div>
+    <div class="scores">
+        <h1>Score:</h1>
+        <h1 id="scoreboard">0</h1>       
+        <div>
+            <h2>High Scores:</h2>
+            <ol id="high-scores"></ol>
+        </div>
+        <button id="quit-btn" class="btn btn--quit">Quit</button>
+    </div>
+    
+    <img src="img/apple.png" alt="" id="apple">
+    <img src="img/banana.png" alt="" id="banana">
 
+    <audio id="eat">
+        <source src="sounds/eat.ogg" type="audio/ogg">
+        <source src="sounds/eat.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="die">
+        <source src="sounds/die.ogg" type="audio/ogg">
+        <source src="sounds/die.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="levelup">
+        <source src="sounds/levelup.ogg" type="audio/ogg">
+        <source src="sounds/levelup.mp3" type="audio/mpeg">
+    </audio>
+    
     <script src="snake.js"></script>
 </body>
 </html>
