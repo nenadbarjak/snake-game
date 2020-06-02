@@ -3,35 +3,105 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
-let dx = 4
-let dy = 4
 const appleImg = document.getElementById('apple')
 const bananaImg = document.getElementById('banana')
 
-document.getElementById('speed-slider').addEventListener('change', (e) => {
-    switch (e.target.value) {
-        case '1':
-            dx = 1
-            dy = 1
-            break
-        case '2':
-            dx = 2
-            dy = 2
-            break
-        case '3':
-            dx = 4
-            dy = 4
-            break
-        case '4':
-            dx = 5
-            dy = 5
-            break
-        case '5':
-            dx = 10
-            dy = 10
-            break
+let snake = [
+    {
+        x: 0,
+        y: 160,
+        direction: 'right',
+        breakpoints: []
+    }, {
+        x: 20,
+        y: 160,
+        direction: 'right',
+        breakpoints: []
+    }, {
+        x: 40,
+        y: 160,
+        direction: 'right',
+        breakpoints: []
     }
-})
+]
+let dx = 4
+let dy = 4
+let direction = 'right'
+const wallsTemplate = {
+    level_1: [],
+    level_2: [
+        {
+            xStart: 0, 
+            xEnd: 100,
+            yStart: 0,
+            yEnd: 0
+        }, {
+            xStart: canvas.width - 100, 
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: 0
+        }, {
+            xStart: 0, 
+            xEnd: 0,
+            yStart: 0,
+            yEnd: 100
+        }, {
+            xStart: canvas.width, 
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: 100
+        }, {
+            xStart: 0, 
+            xEnd: 0,
+            yStart: canvas.height - 100,
+            yEnd: canvas.height
+        }, {
+            xStart: canvas.width, 
+            xEnd: canvas.width,
+            yStart: canvas.height - 100,
+            yEnd: canvas.height
+        }, {
+            xStart: 0, 
+            xEnd: 100,
+            yStart: canvas.height,
+            yEnd: canvas.height
+        }, {
+            xStart: canvas.width - 100, 
+            xEnd: canvas.width,
+            yStart: canvas.height,
+            yEnd: canvas.height
+        }
+    ],
+    level_3: [
+        {
+            xStart: 0,
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: 0
+        }, {
+            xStart: canvas.width,
+            xEnd: canvas.width,
+            yStart: 0,
+            yEnd: canvas.height
+        }, {
+            xStart: 0,
+            xEnd: 0,
+            yStart: 0,
+            yEnd: canvas.height
+        }, {
+            xStart: 0,
+            xEnd: canvas.width,
+            yStart: canvas.height,
+            yEnd: canvas.height
+        }
+    ]
+}
+let walls = wallsTemplate.level_1
+let level = 1
+let score = 0
+let playing = false
+let paused = true
+
 
 const onKeyDown = (e) => {
     switch (e.keyCode) {
@@ -102,103 +172,7 @@ const getFruit = () => {
 
 }
 
-let snake = [
-    {
-        x: 0,
-        y: 160,
-        direction: 'right',
-        breakpoints: []
-    }, {
-        x: 20,
-        y: 160,
-        direction: 'right',
-        breakpoints: []
-    }, {
-        x: 40,
-        y: 160,
-        direction: 'right',
-        breakpoints: []
-    }
-]
-
 let fruit = getFruit()
-
-let direction = 'right'
-
-const wallsTemplate = {
-    level_1: [],
-    level_2: [
-        {
-            xStart: 0, 
-            xEnd: 100,
-            yStart: 0,
-            yEnd: 0
-        }, {
-            xStart: canvas.width - 100, 
-            xEnd: canvas.width,
-            yStart: 0,
-            yEnd: 0
-        }, {
-            xStart: 0, 
-            xEnd: 0,
-            yStart: 0,
-            yEnd: 100
-        }, {
-            xStart: canvas.width, 
-            xEnd: canvas.width,
-            yStart: 0,
-            yEnd: 100
-        }, {
-            xStart: 0, 
-            xEnd: 0,
-            yStart: canvas.height - 100,
-            yEnd: canvas.height
-        }, {
-            xStart: canvas.width, 
-            xEnd: canvas.width,
-            yStart: canvas.height - 100,
-            yEnd: canvas.height
-        }, {
-            xStart: 0, 
-            xEnd: 100,
-            yStart: canvas.height,
-            yEnd: canvas.height
-        }, {
-            xStart: canvas.width - 100, 
-            xEnd: canvas.width,
-            yStart: canvas.height,
-            yEnd: canvas.height
-        }
-    ],
-    level_3: [
-        {
-            xStart: 0,
-            xEnd: canvas.width,
-            yStart: 0,
-            yEnd: 0
-        }, {
-            xStart: canvas.width,
-            xEnd: canvas.width,
-            yStart: 0,
-            yEnd: canvas.height
-        }, {
-            xStart: 0,
-            xEnd: 0,
-            yStart: 0,
-            yEnd: canvas.height
-        }, {
-            xStart: 0,
-            xEnd: canvas.width,
-            yStart: canvas.height,
-            yEnd: canvas.height
-        }
-    ]
-}
-
-let walls = wallsTemplate.level_1
-let level = 1
-
-let score = 0
 
 const moveSquare = (square) => {
     if (square.breakpoints.length && square.x === square.breakpoints[0].x && square.y === square.breakpoints[0].y) {
@@ -405,9 +379,6 @@ const pausedText = () => {
     ctx.fillText("Press SPACE to play", 8, 20);
 }
 
-let playing = false
-let paused = true
-
 const update = () => {
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.height)
 
@@ -415,17 +386,43 @@ const update = () => {
 
     drawFruit()
 
-
     snake.forEach(square => {           
         drawSnake(square.x, square.y)
     })
+
     paused && pausedText()
+
     playing && moveSnake()
 
     requestAnimationFrame(update)
 }
 
 update()
+
+document.getElementById('speed-slider').addEventListener('change', (e) => {
+    switch (e.target.value) {
+        case '1':
+            dx = 1
+            dy = 1
+            break
+        case '2':
+            dx = 2
+            dy = 2
+            break
+        case '3':
+            dx = 4
+            dy = 4
+            break
+        case '4':
+            dx = 5
+            dy = 5
+            break
+        case '5':
+            dx = 10
+            dy = 10
+            break
+    }
+})
 
 document.getElementById('level-select').addEventListener('change', (e) => {
     level = e.target.value
